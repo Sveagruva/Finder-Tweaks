@@ -4,7 +4,11 @@ import FinderTweaksCore
 
 enum FinderContext {
     static func acceptsTweakedKey(for finderPID: pid_t) -> Bool {
-        guard NSWorkspace.shared.frontmostApplication?.bundleIdentifier == AppConstants.finderBundleIdentifier else {
+        guard FinderFocusPolicy.acceptsTweakedKey(
+            frontmostBundleIdentifier: NSWorkspace.shared.frontmostApplication?.bundleIdentifier,
+            focusedElementOwnerPID: systemWideFocusedElementOwnerPID(),
+            finderPID: finderPID
+        ) else {
             return false
         }
 
@@ -30,6 +34,23 @@ enum FinderContext {
         }
 
         return true
+    }
+
+    private static func systemWideFocusedElementOwnerPID() -> pid_t? {
+        let systemWideElement = AXUIElementCreateSystemWide()
+        guard let focusedElement = copiedAttribute(
+            kAXFocusedUIElementAttribute as CFString,
+            from: systemWideElement
+        ) else {
+            return nil
+        }
+
+        var processIdentifier: pid_t = 0
+        guard AXUIElementGetPid(focusedElement, &processIdentifier) == .success else {
+            return nil
+        }
+
+        return processIdentifier
     }
 
     private static func isTextEntryElement(_ element: AXUIElement) -> Bool {

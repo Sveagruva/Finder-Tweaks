@@ -16,7 +16,7 @@ Finder Tweaks gives Finder a small set of fixed, Windows-style keyboard behavior
 
 Each mapping can be switched off independently. The master switch stops and terminates the background agent. Closing or quitting the settings app leaves the agent running.
 
-The agent listens only to events routed to Finder. It ignores mapped keys while a text field or Finder dialog has focus, and while Shift, Control, Option, or Command is held.
+The agent listens only to events routed to Finder. It also requires the system-wide focused element to belong to Finder, so non-activating panels such as Spotlight, Raycast, and Alfred keep control of their keyboard input. Mapped keys are ignored while a text field or Finder dialog has focus, and while Shift, Control, Option, or Command is held.
 
 ## Build
 
